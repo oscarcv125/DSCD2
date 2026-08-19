@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Propension a deposito a plazo</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="sheet">
+      <header class="masthead">
+        <h1>Propension a deposito a plazo</h1>
+        <p class="standfirst">
+          El asesor captura los datos del cliente. Esta pagina los manda a la
+          API, la API se los pasa al pipeline entrenado y regresa la
+          probabilidad estimada. El calculo no ocurre en el navegador.
+        </p>
+        <p class="chain">
+          Formulario <span>/</span> POST /predict <span>/</span> validacion
+          <span>/</span> pipeline <span>/</span> regresion logistica
+          <span>/</span> respuesta JSON
+        </p>
+      </header>
+
+      <div class="columns">
+        <section class="col col-form">
+          <h2 class="col-title">Datos del cliente</h2>
+
+          <form id="predict-form">
+            <div class="field">
+              <label for="f-age">Edad</label>
+              <input id="f-age" type="number" name="age" min="18" max="100" value="41" required />
+            </div>
+
+            <div class="field">
+              <label for="job">Ocupacion</label>
+              <select name="job" id="job" required></select>
+            </div>
+
+            <div class="field">
+              <label for="marital">Estado civil</label>
+              <select name="marital" id="marital" required></select>
+            </div>
+
+            <div class="field">
+              <label for="education">Nivel educativo</label>
+              <select name="education" id="education" required></select>
+            </div>
+
+            <div class="field">
+              <label for="f-balance">Balance anual promedio</label>
+              <input id="f-balance" type="number" name="balance" value="3200" required />
+            </div>
+
+            <div class="field">
+              <label for="f-housing">Credito hipotecario</label>
+              <select id="f-housing" name="housing" required>
+                <option value="yes">Si</option>
+                <option value="no">No</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="f-loan">Prestamo personal</label>
+              <select id="f-loan" name="loan" required>
+                <option value="no">No</option>
+                <option value="yes">Si</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="f-campaign">Contactos en la campana</label>
+              <input id="f-campaign" type="number" name="campaign" min="1" max="60" value="2" required />
+            </div>
+
+            <div class="actions">
+              <button type="submit">Estimar propension</button>
+              <button type="button" id="invalid-test">Probar con edad invalida (&minus;10)</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="col col-out">
+          <h2 class="col-title">Resultado</h2>
+
+          <p id="placeholder" class="placeholder">Todavia no se ha consultado a la API.</p>
+
+          <div id="result" class="result hidden">
+            <p class="readout">
+              <span class="prob-value" id="prob-value">0%</span>
+              <span class="readout-label">probabilidad estimada de contratacion</span>
+            </p>
+            <div class="prob-track"><div class="prob-fill" id="prob-fill"></div></div>
+            <p class="verdict" id="verdict"></p>
+            <p class="caveat">
+              El resultado es la salida del modelo y no una certeza sobre lo que
+              el cliente va a hacer.
+            </p>
+          </div>
+
+          <div id="error-box" class="error-box hidden"></div>
+
+          <details class="raw">
+            <summary>Respuesta cruda de la API</summary>
+            <pre id="raw-json">Sin datos.</pre>
+          </details>
+        </section>
+      </div>
+
+      <footer class="colophon">
+        <h2 class="col-title">Modelo en uso</h2>
+        <p id="model-note">Cargando informacion del modelo...</p>
+        <div class="kpi-grid" id="kpi-grid"></div>
+      </footer>
+    </main>
+
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

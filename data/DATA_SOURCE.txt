@@ -1,0 +1,3 @@
+Origen de data/bank.csv: UCI Machine Learning Repository (bank.csv original)
+Filas: 4521
+Tasa de 'yes': 0.1152

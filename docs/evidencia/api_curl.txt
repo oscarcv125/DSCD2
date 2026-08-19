@@ -1,0 +1,30 @@
+Sesion de curl contra la API levantada con:
+  uvicorn app.main:app --host 127.0.0.1 --port 8000
+
+$ curl -s http://127.0.0.1:8000/health
+{"status":"ok","model_loaded":true,"features":["age","balance","campaign","job","marital","education","housing","loan"]}
+
+Un jubilado con buen balance y sin deudas.
+$ curl -s -X POST http://127.0.0.1:8000/predict -H "Content-Type: application/json" -d '{"age":68,"job":"retired","marital":"married","education":"tertiary","balance":6000,"housing":"no","loan":"no","campaign":1}'
+{"prediction":"yes","probability":0.7577,"classification":"Potencialmente interesado","threshold":0.5}
+
+El mismo endpoint con un perfil de baja propension.
+$ curl -s -X POST http://127.0.0.1:8000/predict -H "Content-Type: application/json" -d '{"age":41,"job":"technician","marital":"married","education":"secondary","balance":3200,"housing":"yes","loan":"no","campaign":2}'
+{"prediction":"no","probability":0.4005,"classification":"Poco probable","threshold":0.5}
+
+age llega como texto.
+$ curl -s -X POST http://127.0.0.1:8000/predict -H "Content-Type: application/json" -d '{"age":"hola","job":"technician","marital":"married","education":"secondary","balance":3200,"housing":"yes","loan":"no","campaign":2}'
+{"error":"Datos invalidos","detail":"age: Input should be a valid integer, unable to parse string as an integer"}
+HTTP 422
+
+age fuera de rango.
+$ curl -s -X POST http://127.0.0.1:8000/predict -H "Content-Type: application/json" -d '{"age":-10,"job":"technician","marital":"married","education":"secondary","balance":3200,"housing":"yes","loan":"no","campaign":2}'
+{"error":"Datos invalidos","detail":"age: Input should be greater than or equal to 18"}
+HTTP 422
+
+job fuera del catalogo.
+$ curl -s -X POST http://127.0.0.1:8000/predict -H "Content-Type: application/json" -d '{"age":41,"job":"ingeniero","marital":"married","education":"secondary","balance":3200,"housing":"yes","loan":"no","campaign":2}'
+{"error":"Datos invalidos","detail":"job: Input should be 'admin.', 'blue-collar', 'entrepreneur', 'housemaid', 'management', 'retired', 'self-employed', 'services', 'student', 'technician', 'unemployed' or 'unknown'"}
+HTTP 422
+
+En los tres rechazos el pipeline no llega a ejecutarse.
